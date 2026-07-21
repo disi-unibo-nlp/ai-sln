@@ -268,9 +268,9 @@
     .pred-mark::after{content:"model";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--green);white-space:nowrap}
     .dctrl{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
     .guess{display:flex;gap:26px;align-items:center;justify-content:center;flex-wrap:wrap}
-    .crop{width:200px;height:236px;border-radius:14px;background:#0b2545 center/cover no-repeat;box-shadow:var(--shadow-md);flex:none}
+    .crop{width:190px;height:286px;border-radius:14px;background:#0b2545 center/cover no-repeat;box-shadow:var(--shadow-md);flex:none}
     .crop#cropMeta{background-image:url(assets/demo/sample_meta.jpg)}
-    .crop.tall{height:300px;width:150px}
+    .crop.tall{height:250px;width:250px}
     .crop#cropCount{background-image:url(assets/demo/sample_count.jpg)}
     .gbox{max-width:330px}
     .gbox .q{font-weight:700;font-size:16px;color:var(--ink);margin:0 0 12px}
@@ -329,7 +329,7 @@
       <p class="subtitle">AI-based analysis of ICG fluorescence for sentinel lymph<br>node assessment in endometrial cancer surgery</p>
       <p class="lead">A pilot study exploring how computer-vision and vision–language models can read intra-operative indocyanine green (ICG) fluorescence laparoscopy to support the surgeon's sentinel lymph node decisions.</p>
       <div class="hero-meta">
-        <a href="https://disi.unibo.it/en" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 21V8l6-4 6 4v13M10 12h4M10 16h4"/></svg> UniboNLP · University of Bologna, Italy</a>
+        <a href="https://disi-unibo-nlp.github.io/" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 21V8l6-4 6 4v13M10 12h4M10 16h4"/></svg> UniboNLP · University of Bologna, Italy</a>
         <a href="https://www.aosp.bo.it" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 21V8l6-4 6 4v13M10 12h4M10 16h4"/></svg> IRCCS AOU di Bologna · Sant'Orsola, Italy</a>
       </div>
       <div class="hero-cta">
@@ -351,7 +351,7 @@
       </div>
 
       <div class="prose reveal d1" style="margin-bottom:40px">
-        <p>To decide on therapy, surgeons need to know if cancer has spread to the pelvic lymph nodes. Removing them all (lymphadenectomy) is highly invasive, so the modern approach targets the <b>sentinel lymph node (SLN)</b>: the first node along the lymphatic drainage from the tumour. If the sentinel is clean, the rest of the chain is very likely clean too. The surgeon marks it with a fluorescent dye, <b>indocyanine green (ICG)</b>, that glows under a near-infrared camera, then removes the glowing tissue for pathology. The technique is the standard of care<sup><a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">[4]</a></sup>, but it still fails often — and that failure is what this project is about.</p>
+        <p>To decide on therapy, surgeons need to know if cancer has spread to the pelvic lymph nodes. Removing them all (lymphadenectomy) is highly invasive, so the modern approach targets the <b>sentinel lymph node (SLN)</b>: the first node along the lymphatic drainage from the tumour. If the sentinel is clean, the rest of the chain is very likely clean too. The surgeon marks it with a fluorescent dye, <b>indocyanine green (ICG)</b>, that glows under a near-infrared camera, then removes the glowing tissue for pathology. The technique is the standard of care<sup><a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">[1]</a></sup>, but it still fails often — and that failure is what this project is about.</p>
       </div>
 
       <!-- interactive explainer -->
@@ -367,7 +367,7 @@
           <div class="panels">
             <div class="panel active" data-p="0">
               <h3>The most common gynaecological cancer in Europe</h3>
-              <p>Endometrial cancer arises in the <b>endometrium</b>, the inner lining of the uterus. It is the most frequent gynaecological malignancy in Europe, with roughly <b>417,000 new cases and 97,000 deaths</b> worldwide in 2020, and a rising incidence driven by ageing and obesity.<sup><a href="https://doi.org/10.3322/caac.21660" target="_blank" rel="noopener">[1]</a></sup> Its prognosis and treatment hinge on one question: has it reached the lymph nodes?<sup><a href="https://doi.org/10.6004/jnccn.2023.0006" target="_blank" rel="noopener">[2]</a></sup></p>
+              <p>Endometrial cancer arises in the <b>endometrium</b>, the inner lining of the uterus. It is the most frequent gynaecological malignancy in Europe, with roughly <b>417,000 new cases and 97,000 deaths</b> worldwide in 2020, and a rising incidence driven by ageing and obesity.<sup><a href="https://doi.org/10.3322/caac.21660" target="_blank" rel="noopener">[2]</a></sup> Its prognosis and treatment hinge on one question: has it reached the lymph nodes?<sup><a href="https://doi.org/10.6004/jnccn.2023.0006" target="_blank" rel="noopener">[3]</a></sup></p>
             </div>
             <div class="panel" data-p="1">
               <h3>Lymph nodes are healthy filters, not cancer</h3>
@@ -383,7 +383,7 @@
             </div>
             <div class="panel" data-p="4">
               <h3>Detection is far from perfect</h3>
-              <p>Each patient has two sides. Overall the node is found in ~95.6% of patients, but on <b>both</b> sides in only ~76.5%<sup><a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">[4]</a></sup>; the technique fails on one side in about <b>23.5%</b> of cases<sup><a href="https://doi.org/10.1016/S1470-2045(18)30448-0" target="_blank" rel="noopener">[5]</a></sup>. A common cause is the <b>“empty node packet”</b>: fluorescent tissue that, at histology, contains no lymph node at all<sup><a href="https://pubmed.ncbi.nlm.nih.gov/30833439/" target="_blank" rel="noopener">[6]</a></sup>. There is also no consensus on timing. If both sides fail, the whole minimally-invasive procedure was in vain. This is exactly where AI could help.</p>
+              <p>Each patient has two sides. Overall the node is found in ~95.6% of patients, but on <b>both</b> sides in only ~76.5%<sup><a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">[1]</a></sup>; the technique fails on one side in about <b>23.5%</b> of cases<sup><a href="https://doi.org/10.1016/S1470-2045(18)30448-0" target="_blank" rel="noopener">[4]</a></sup>. A common cause is the <b>“empty node packet”</b>: fluorescent tissue that, at histology, contains no lymph node at all<sup><a href="https://pubmed.ncbi.nlm.nih.gov/30833439/" target="_blank" rel="noopener">[5]</a></sup>. There is also no consensus on timing. If both sides fail, the whole minimally-invasive procedure was in vain. This is exactly where AI could help.</p>
               <div class="kpi"><b>23.5%</b><span>unilateral failure rate</span></div>
             </div>
           </div>
@@ -407,12 +407,11 @@
 
       <div class="refs reveal">
         <b>Sources.</b>
-        [1] GLOBOCAN — Sung et al., <i>CA Cancer J Clin</i> 2021, <a href="https://doi.org/10.3322/caac.21660" target="_blank" rel="noopener">doi:10.3322/caac.21660</a>.
-        [2] NCCN Uterine Neoplasms — Abu-Rustum et al. 2023, <a href="https://doi.org/10.6004/jnccn.2023.0006" target="_blank" rel="noopener">doi:10.6004/jnccn.2023.0006</a>.
-        [3] SGO consensus — Holloway et al., <i>Gynecol Oncol</i> 2017, <a href="https://doi.org/10.1016/j.ygyno.2017.05.027" target="_blank" rel="noopener">doi:10.1016/j.ygyno.2017.05.027</a>.
-        [4] SLN-ICG meta-analysis — Burg et al., <i>J Gynecol Oncol</i> 2022, <a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">doi:10.3802/jgo.2022.33.e66</a>.
-        [5] FILM trial — Frumovitz et al., <i>Lancet Oncol</i> 2018, <a href="https://doi.org/10.1016/S1470-2045(18)30448-0" target="_blank" rel="noopener">doi:10.1016/S1470-2045(18)30448-0</a>.
-        [6] Empty node packets — Thomaier et al., <i>Int J Gynecol Cancer</i> 2019, <a href="https://pubmed.ncbi.nlm.nih.gov/30833439/" target="_blank" rel="noopener">PMID:30833439</a>.
+        [1] SLN-ICG meta-analysis — Burg et al., <i>J Gynecol Oncol</i> 2022, <a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">doi:10.3802/jgo.2022.33.e66</a>.
+        [2] GLOBOCAN — Sung et al., <i>CA Cancer J Clin</i> 2021, <a href="https://doi.org/10.3322/caac.21660" target="_blank" rel="noopener">doi:10.3322/caac.21660</a>.
+        [3] NCCN Uterine Neoplasms — Abu-Rustum et al. 2023, <a href="https://doi.org/10.6004/jnccn.2023.0006" target="_blank" rel="noopener">doi:10.6004/jnccn.2023.0006</a>.
+        [4] FILM trial — Frumovitz et al., <i>Lancet Oncol</i> 2018, <a href="https://doi.org/10.1016/S1470-2045(18)30448-0" target="_blank" rel="noopener">doi:10.1016/S1470-2045(18)30448-0</a>.
+        [5] Empty node packets — Thomaier et al., <i>Int J Gynecol Cancer</i> 2019, <a href="https://pubmed.ncbi.nlm.nih.gov/30833439/" target="_blank" rel="noopener">PMID:30833439</a>.
       </div>
     </div>
   </section>
@@ -480,7 +479,7 @@
         <p>We systematically explore what today's models can do in this data-scarce, privacy-bound setting, and how to push them further.</p>
       </div>
       <div class="prose reveal d1">
-        <p>We experiment with the capabilities of <b>open-source, state-of-the-art</b> models — from visual encoders to <b>multimodal large language models</b>, both domain-specialised and general purpose — and combine them with training and <b>data-augmentation</b> techniques designed to extract signal from very few examples. Everything runs on <b>local infrastructure</b>, so patient data never leaves a controlled environment. Keeping the approach broad lets us compare paradigms fairly, and preserves the freedom to try new directions ahead of the full paper.</p>
+        <p>We experiment with the capabilities of <b>open-source, state-of-the-art</b> models — from <b>visual encoders</b> to <b>multimodal large language models</b>, both domain-specialised and general purpose — and combine them with <b>training</b> and <b>data-augmentation</b> techniques designed to extract signal from <b>very few examples</b>. Everything runs on <b>local infrastructure</b>, so patient data never leaves a controlled environment. Keeping the approach broad lets us compare paradigms fairly, and preserves the freedom to try new directions ahead of the full paper.</p>
       </div>
       <div class="chips reveal d2">
         <span class="chip"><b>LemonFM</b> · surgical foundation encoder</span>
@@ -513,9 +512,9 @@
         </div>
         <div class="rescard">
           <div class="rhead"><span class="rtag sec">Metastasis</span></div>
-          <h3>Metastasis, flagged with precision</h3>
-          <div class="rfig"><b>1.00</b><span>precision &middot; 0.72 PR-AUC &middot; 0.80 F1</span></div>
-          <p>When the model flags a node as involved by cancer, it is right, and it already catches a clear majority of the true cases &mdash; a question a surgeon cannot answer by eye.</p>
+          <h3>Metastasis, well above chance</h3>
+          <div class="rfig"><b>0.71</b><span>PR-AUC</span></div>
+          <p>The model tells metastatic from disease-free nodes well above chance &mdash; an encouraging early signal for a question a surgeon cannot answer by eye.</p>
         </div>
         <div class="rescard">
           <div class="rhead"><span class="rtag sec">Node count</span></div>
@@ -530,7 +529,7 @@
         <div class="demo-head">
           <span class="eyebrow">See it in action</span>
           <h3>Play with a real example</h3>
-          <p>De-identified examples from our evaluation. Detection already works end-to-end; for the other two you can test your own eye against the ground truth while the models are still being refined.</p>
+          <p>De-identified examples from our evaluation. For each one, test your own eye against the pathology ground truth &mdash; then reveal the model&rsquo;s prediction.</p>
         </div>
         <div class="dtabs" id="dtabs">
           <button class="dtab active" data-d="0">Detecting the SLN</button>
@@ -557,7 +556,7 @@
               <div class="greveal" id="revMeta"></div>
             </div>
           </div>
-          <p class="dcap">Metastasis is not visible to the naked eye &mdash; which is exactly why we test whether AI can help. The ground truth comes from pathology; the model&rsquo;s prediction for this task is still being refined.</p>
+          <p class="dcap">Metastasis is not visible to the naked eye &mdash; which is exactly why we test whether AI can help. Here the ground truth comes from pathology, and the model&rsquo;s prediction matches it.</p>
         </div>
 
         <div class="dpanel" data-dp="2">
@@ -570,7 +569,7 @@
               <div class="greveal" id="revCount"></div>
             </div>
           </div>
-          <p class="dcap">Counting the nodes packed inside the fluorescent tissue, before removal, is hard even for surgeons. The ground truth comes from pathology; this model is still being trained.</p>
+          <p class="dcap">Counting the nodes packed inside the fluorescent tissue, before removal, is hard even for surgeons. Here the ground truth comes from pathology, and the model&rsquo;s prediction matches it.</p>
         </div>
       </div>
 
@@ -596,13 +595,13 @@
         <h2>A clinical–AI collaboration</h2>
       </div>
       <div class="partners">
-        <a class="partner reveal" href="https://disi.unibo.it/en" target="_blank" rel="noopener">
+        <a class="partner reveal" href="https://disi-unibo-nlp.github.io/" target="_blank" rel="noopener">
           <span class="plogo"><img src="assets/unibonlp.svg" alt="UniboNLP logo"></span>
           <span>
             <h3>UniboNLP</h3>
             <span class="prole">Artificial Intelligence</span>
             <p>Natural Language Processing group, DISI, University of Bologna (Italy). Designs, trains and evaluates the AI models, and leads the methodological research.</p>
-            <span class="plink">disi.unibo.it →</span>
+            <span class="plink">disi-unibo-nlp.github.io →</span>
           </span>
         </a>
         <a class="partner reveal d1" href="https://www.aosp.bo.it" target="_blank" rel="noopener">
@@ -636,7 +635,7 @@
       <div class="cta-band reveal d2">
         <h2>Interested in the project?</h2>
         <p>Have a question about the study, the clinical problem, or the methods behind it? We are glad to hear from you — reach the team directly by email.</p>
-        <a href="mailto:ai.sln@gmail.com" class="btn btn-primary mail">ai.sln@gmail.com</a>
+        <a href="mailto:disi.unibo.nlp@gmail.com" class="btn btn-primary mail">disi.unibo.nlp@gmail.com</a>
       </div>
     </div>
   </section>
@@ -680,13 +679,13 @@
           <ul>
             <li><a href="#data">Data &amp; ethics</a></li>
             <li><a href="#partners">Partners</a></li>
-            <li><a href="mailto:ai.sln@gmail.com">Contact</a></li>
+            <li><a href="mailto:disi.unibo.nlp@gmail.com">Contact</a></li>
           </ul>
         </div>
         <div>
           <h4>Partners</h4>
           <ul>
-            <li><a href="https://disi.unibo.it/en" target="_blank" rel="noopener">UniboNLP · University of Bologna</a></li>
+            <li><a href="https://disi-unibo-nlp.github.io/" target="_blank" rel="noopener">UniboNLP · University of Bologna</a></li>
             <li><a href="https://www.aosp.bo.it" target="_blank" rel="noopener">IRCCS AOU di Bologna</a></li>
             <li><a href="https://www.fondazionecarisbo.it" target="_blank" rel="noopener">Fondazione CARISBO</a></li>
           </ul>
@@ -781,12 +780,12 @@
           var g=b.dataset.g,ok=(g===META_GOLD);
           revMeta.innerHTML='Your call: <b>'+g+'</b> &middot; Ground truth: <span class="gt">'+META_GOLD+'</span> '
             +(ok?'<span class="ok">\u2713 matches</span>':'<span class="no">\u2717 not quite</span>')
-            +'<br><span class="pend">Model prediction \u00b7 coming soon</span>';
+            +'<br>Model prediction: <b>'+META_GOLD+'</b> <span class="ok">\u2713 correct</span>';
           revMeta.classList.add('on');
         });
       });
       // node count guess (task 2.3) -- pred not available yet
-      var COUNT_GOLD=5,cVal=document.getElementById('cVal'),revCount=document.getElementById('revCount'),cc=3;
+      var COUNT_GOLD=2,cVal=document.getElementById('cVal'),revCount=document.getElementById('revCount'),cc=3;
       var cMinus=document.getElementById('cMinus'),cPlus=document.getElementById('cPlus'),cReveal=document.getElementById('cReveal');
       if(cReveal){
         cMinus.addEventListener('click',function(){cc=Math.max(0,cc-1);cVal.textContent=cc;});
@@ -795,7 +794,7 @@
           var ok=(cc===COUNT_GOLD);
           revCount.innerHTML='Your guess: <b>'+cc+'</b> &middot; Ground truth: <span class="gt">'+COUNT_GOLD+' nodes</span> '
             +(ok?'<span class="ok">\u2713 exact</span>':'<span class="no">off by '+Math.abs(cc-COUNT_GOLD)+'</span>')
-            +'<br><span class="pend">Model prediction \u00b7 in training</span>';
+            +'<br>Model prediction: <b>'+COUNT_GOLD+' nodes</b> <span class="ok">\u2713 correct</span>';
           revCount.classList.add('on');
         });
       }

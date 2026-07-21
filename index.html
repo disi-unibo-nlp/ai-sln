@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI-SLN — AI-based analysis of indocyanine green (ICG) fluorescence for sentinel lymph node assessment in endometrial cancer surgery. A collaboration between UniboNLP (University of Bologna) and IRCCS AOU di Bologna, Policlinico di Sant'Orsola.">
+  <meta name="author" content="AI-SLN Project">
+  <meta property="og:title" content="AI-SLN — AI for Sentinel Lymph Node Assessment in Endometrial Cancer Surgery">
+  <meta property="og:description" content="Assisting surgeons in reading intra-operative ICG fluorescence laparoscopy: detecting the sentinel node, anticipating metastasis, estimating node count.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%233b82f6'/%3E%3Cg fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round'%3E%3Cpath d='M6 9V7a1 1 0 0 1 1-1h2M15 6h2a1 1 0 0 1 1 1v2M18 15v2a1 1 0 0 1-1 1h-2M9 18H7a1 1 0 0 1-1-1v-2'/%3E%3Ccircle cx='12' cy='12' r='2.6' fill='white' stroke='none'/%3E%3Ccircle cx='12' cy='12' r='4.4' opacity='.55'/%3E%3C/g%3E%3C/svg%3E">
+  <title>AI-SLN · AI for Sentinel Lymph Node Assessment in Endometrial Cancer Surgery</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --blue-900:#0b2545; --blue-700:#11457e; --blue-600:#1668b3; --blue-500:#2683d6;
+      --accent:#06b6d4; --accent-2:#3b82f6; --teal:#0e9f9f; --green:#12b28c;
+      --ink:#0f172a; --muted:#5b6b82; --line:#e6eaf0;
+      --bg:#ffffff; --bg-alt:#f5f9fc; --card:#ffffff;
+      --shadow-sm:0 1px 2px rgba(15,23,42,.06),0 2px 8px rgba(15,23,42,.05);
+      --shadow-md:0 8px 24px rgba(15,23,42,.10);
+      --shadow-lg:0 18px 50px rgba(15,23,42,.16);
+      --radius:16px; --maxw:1140px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;line-height:1.18;margin:0;letter-spacing:-.01em}
+    a{color:var(--blue-600);text-decoration:none;transition:color .2s ease}
+    a:hover{color:var(--accent)}
+    img{max-width:100%;display:block}
+    p{margin:0 0 16px}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+    #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:1002;transition:width .1s linear}
+
+    header.nav{position:fixed;top:0;left:0;right:0;z-index:900;transition:background .35s,box-shadow .35s,padding .35s;padding:16px 0}
+    header.nav.scrolled{background:rgba(255,255,255,.9);backdrop-filter:saturate(160%) blur(12px);box-shadow:0 1px 0 var(--line),var(--shadow-sm);padding:9px 0}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:11px;font-family:'Plus Jakarta Sans';font-weight:800;font-size:19px;color:#fff;transition:color .35s}
+    header.nav.scrolled .brand{color:var(--ink)}
+    .brand .logo{width:36px;height:36px;border-radius:10px;flex:none;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;color:#fff;box-shadow:0 6px 16px rgba(59,130,246,.45)}
+    .brand small{display:block;font-family:'Inter';font-weight:600;font-size:11px;letter-spacing:.2px;color:rgba(255,255,255,.72);margin-top:-2px}
+    header.nav.scrolled .brand small{color:var(--muted)}
+    .nav-links{display:flex;align-items:center;gap:2px}
+    .nav-links a.link{position:relative;color:rgba(255,255,255,.92);font-weight:500;font-size:14.5px;padding:8px 12px;border-radius:10px;transition:color .25s,background .25s}
+    header.nav.scrolled .nav-links a.link{color:var(--muted)}
+    .nav-links a.link::after{content:"";position:absolute;left:12px;right:12px;bottom:4px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:scaleX(0);transform-origin:left;transition:transform .3s;border-radius:2px}
+    .nav-links a.link:hover{color:#fff}
+    header.nav.scrolled .nav-links a.link:hover{color:var(--ink);background:var(--bg-alt)}
+    .nav-links a.link:hover::after{transform:scaleX(1)}
+    .menu-toggle{display:none;flex-direction:column;gap:5px;background:transparent;border:0;cursor:pointer;padding:8px}
+    .menu-toggle span{width:24px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+    header.nav.scrolled .menu-toggle span{background:var(--ink)}
+
+    .hero{position:relative;min-height:100vh;display:flex;align-items:center;color:#fff;overflow:hidden;background:radial-gradient(1200px 600px at 78% -10%,rgba(6,182,212,.35),transparent 60%),linear-gradient(160deg,var(--blue-900) 0%,var(--blue-700) 55%,var(--blue-600) 100%)}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(80% 70% at 60% 30%,#000,transparent 75%)}
+    .hero-glow{position:absolute;width:520px;height:520px;border-radius:50%;filter:blur(70px);opacity:.5;background:radial-gradient(circle,rgba(6,182,212,.8),transparent 65%);top:-120px;right:-80px;animation:float 12s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(30px)}}
+    .hero-inner{position:relative;padding:130px 0 100px;max-width:940px}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:.4px;margin-bottom:22px}
+    .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(6,182,212,.25)}
+    .hero h1{font-size:clamp(42px,7vw,76px);font-weight:800;letter-spacing:-.02em}
+    .hero .subtitle{font-size:clamp(18px,2.6vw,25px);font-weight:600;margin:16px 0 4px;color:#eaf4ff;font-family:'Plus Jakarta Sans'}
+    .hero .lead{font-size:clamp(15px,1.7vw,18px);color:rgba(255,255,255,.82);max-width:780px;margin-top:14px}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:10px 22px;margin:26px 0 8px;font-size:14px}
+    .hero-meta a{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.92);border-bottom:1px solid transparent}
+    .hero-meta a:hover{color:#fff;border-bottom-color:var(--accent)}
+    .hero-meta .ic{width:17px;height:17px;flex:none;color:var(--accent)}
+    .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-weight:600;font-size:15px;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s;border:1.5px solid transparent}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 10px 24px rgba(59,130,246,.4)}
+    .btn-primary:hover{transform:translateY(-2px);color:#fff;box-shadow:0 14px 30px rgba(59,130,246,.5)}
+    .btn-ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3);color:#fff}
+    .btn-ghost:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateY(-2px)}
+    .btn-soon{background:rgba(255,255,255,.05);border:1.5px dashed rgba(255,255,255,.3);color:rgba(255,255,255,.7);cursor:default}
+    .scroll-cue{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+    .mouse{width:22px;height:34px;border:2px solid rgba(255,255,255,.5);border-radius:12px;position:relative}
+    .mouse::after{content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);width:4px;height:7px;background:#fff;border-radius:2px;animation:scroll 1.6s ease infinite}
+    @keyframes scroll{0%{opacity:0;top:6px}40%{opacity:1}80%{opacity:0;top:16px}}
+
+    .block{padding:92px 0;position:relative}
+    .block.alt{background:var(--bg-alt)}
+    .sec-head{max-width:780px;margin:0 auto 48px;text-align:center}
+    .eyebrow{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--blue-500);margin-bottom:12px}
+    .sec-head h2{font-size:clamp(26px,4vw,40px);font-weight:800}
+    .sec-head p{color:var(--muted);font-size:17px;margin-top:14px}
+    .prose{max-width:820px;margin:0 auto;font-size:16.5px;color:#33425a}
+    .prose b{color:var(--ink)}
+    sup a{font-size:11px;font-weight:700;color:var(--blue-500);padding:0 1px}
+
+    .grid{display:grid;gap:22px}
+    .g-3{grid-template-columns:repeat(3,1fr)}
+    .g-2{grid-template-columns:repeat(2,1fr)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s}
+    .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+    .card .ic-box{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(6,182,212,.14),rgba(59,130,246,.14));color:var(--blue-600);margin-bottom:16px}
+    .card .ic-box svg{width:23px;height:23px}
+    .card h3{font-size:19px;font-weight:700;margin-bottom:8px}
+    .card p{color:var(--muted);font-size:14.5px;margin:0}
+    .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:14px}
+    .tag.pri{background:rgba(59,130,246,.12);color:var(--blue-600)}
+    .tag.sec{background:rgba(14,159,159,.14);color:var(--teal)}
+
+    /* interactive explainer */
+    .explain{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:stretch;max-width:1040px;margin:6px auto 0}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+    .tab{border:1px solid var(--line);background:var(--card);color:var(--muted);font-weight:600;font-size:13.5px;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.2s}
+    .tab:hover{color:var(--ink)}
+    .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(59,130,246,.28)}
+    .panel{display:none}
+    .panel.active{display:block;animation:fade .4s ease}
+    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .panel h3{font-size:20px;margin-bottom:8px}
+    .panel p{color:#33425a;font-size:15.5px}
+    .panel .kpi{display:inline-flex;align-items:baseline;gap:8px;background:var(--bg-alt);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:6px}
+    .panel .kpi b{font-family:'Plus Jakarta Sans';font-size:22px;color:var(--blue-600)}
+    .panel .kpi span{font-size:13px;color:var(--muted)}
+    .figwrap{background:linear-gradient(160deg,#0b2545,#11457e);border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+    .figwrap svg{width:100%;height:auto}
+    .refs{max-width:1040px;margin:34px auto 0;font-size:12.6px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+    .refs b{color:var(--ink)}
+    .refs a{color:var(--blue-500)}
+
+    /* two-questions */
+    .twoq{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1040px;margin:44px auto 0}
+    .qcard{border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--card);box-shadow:var(--shadow-sm)}
+    .qcard .qh{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;margin-bottom:6px}
+    .qcard .pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 9px;border-radius:999px}
+    .qcard.c1 .pill{background:rgba(59,130,246,.12);color:var(--blue-600)}
+    .qcard.c2 .pill{background:rgba(18,178,140,.14);color:var(--green)}
+    .qcard p{margin:0;color:var(--muted);font-size:14.5px}
+    .qcard em{color:var(--ink);font-style:normal;font-weight:600}
+
+    .note{max-width:820px;margin:30px auto 0;font-size:13.8px;color:var(--muted);text-align:center}
+
+    .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px}
+    .chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:13.5px;font-weight:600;color:#33425a;box-shadow:var(--shadow-sm)}
+    .chip b{color:var(--blue-600)}
+
+    .callout{max-width:920px;margin:0 auto;background:linear-gradient(135deg,rgba(6,182,212,.07),rgba(59,130,246,.07));border:1px solid var(--line);border-left:4px solid var(--accent-2);border-radius:14px;padding:24px 28px}
+    .callout h3{font-size:18px;margin-bottom:8px}
+    .callout p{color:#33425a;font-size:15px;margin:0}
+
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+    .metric{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 24px;box-shadow:var(--shadow-sm)}
+    .metric .big{font-family:'Plus Jakarta Sans';font-weight:800;font-size:38px;background:linear-gradient(135deg,var(--blue-600),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.05}
+    .metric .mname{font-weight:700;margin:8px 0 8px;font-size:16.5px}
+    .metric p{color:var(--muted);font-size:14.3px;margin:0 0 10px}
+    .metric .small{font-size:12.5px;color:#8695a8;border-top:1px dashed var(--line);padding-top:9px}
+
+    /* partners */
+    .partners{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:980px;margin:0 auto}
+    .partner{display:flex;gap:20px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s}
+    .partner:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+    .partner .plogo{flex:none;width:96px;height:96px;border-radius:14px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;padding:12px}
+    .partner .plogo img{max-width:100%;max-height:100%;object-fit:contain}
+    .partner h3{font-size:18px;margin-bottom:2px}
+    .partner .prole{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--blue-500);margin:4px 0 8px}
+    .partner p{color:var(--muted);font-size:14px;margin:0 0 10px}
+    .partner .plink{font-weight:600;font-size:14px}
+
+    .res-wrap{display:flex;justify-content:center}
+    .res{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 26px;box-shadow:var(--shadow-sm);min-width:340px}
+    .res .ic-box{width:46px;height:46px;flex:none;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(6,182,212,.14),rgba(59,130,246,.14));color:var(--blue-600)}
+    .res .ic-box svg{width:22px;height:22px}
+    .res .rt{font-weight:700;font-size:16px;color:var(--ink)}
+    .res .rs{font-size:13px;color:var(--muted)}
+    .res .soon{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:3px 9px;margin-left:auto}
+
+    .cta-band{background:radial-gradient(900px 400px at 80% -20%,rgba(6,182,212,.4),transparent 60%),linear-gradient(160deg,var(--blue-900),var(--blue-700));color:#fff;text-align:center;border-radius:22px;padding:52px 28px;box-shadow:var(--shadow-lg);max-width:820px;margin:52px auto 0}
+    .cta-band h2{font-size:clamp(22px,3.2vw,32px);font-weight:800}
+    .cta-band p{color:rgba(255,255,255,.82);max-width:560px;margin:12px auto 24px;font-size:16px}
+    .mail{font-family:'Plus Jakarta Sans';font-weight:700;font-size:18px}
+
+    /* funding */
+    .fund{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:34px;flex-wrap:wrap;justify-content:center;text-align:center}
+    .fund .flogo{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px;box-shadow:var(--shadow-sm)}
+    .fund .flogo img{height:64px;width:auto}
+    .fund .ftxt{max-width:520px;text-align:left}
+    .fund .ftxt h3{font-size:18px;margin-bottom:6px}
+    .fund .ftxt p{color:var(--muted);font-size:14.5px;margin:0}
+
+    footer.site{background:var(--blue-900);color:rgba(255,255,255,.72);padding:50px 0 28px;font-size:14px}
+    footer.site .cols{display:flex;flex-wrap:wrap;gap:36px;justify-content:space-between;margin-bottom:28px}
+    footer.site h4{color:#fff;font-size:15px;margin-bottom:12px}
+    footer.site a{color:rgba(255,255,255,.72)}
+    footer.site a:hover{color:var(--accent)}
+    footer.site .fbrand{max-width:340px}
+    footer.site .fbrand .brand{color:#fff;margin-bottom:12px}
+    footer.site ul{list-style:none;margin:0;padding:0}
+    footer.site ul li{margin:6px 0}
+    footer.site .bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:20px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;font-size:12.6px;color:rgba(255,255,255,.55)}
+
+    #toTop{position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:12px;border:0;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-size:20px;cursor:pointer;box-shadow:var(--shadow-md);opacity:0;pointer-events:none;transform:translateY(12px);transition:.3s;z-index:800}
+    #toTop.show{opacity:1;pointer-events:auto;transform:none}
+
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.in{opacity:1;transform:none}
+    .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}
+
+    @media(max-width:900px){
+      .g-3,.metrics,.partners{grid-template-columns:1fr}
+      .explain{grid-template-columns:1fr}
+      .twoq{grid-template-columns:1fr}
+    }
+    @media(max-width:680px){
+      .nav-links{position:fixed;top:0;right:0;height:100vh;width:min(80vw,300px);background:#fff;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:90px 22px 22px;gap:4px;box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .3s;z-index:950}
+      .nav-links.open{transform:none}
+      .nav-links a.link{color:var(--ink);width:100%;font-size:16px}
+      .menu-toggle{display:flex;z-index:960}
+      .g-2{grid-template-columns:1fr}
+      .hero-inner{padding:120px 0 90px}
+      .block{padding:66px 0}
+      .partner{flex-direction:column;align-items:center;text-align:center}
+    }
+
+    /* ---- image protection (no easy download / drag) ---- */
+    img{-webkit-user-drag:none;user-select:none}
+    .protect{user-select:none;-webkit-user-select:none}
+    /* ---- clinical-problem illustration ---- */
+    .figwrap{background:#fff;border:1px solid var(--line);padding:14px}
+    .figwrap img{border-radius:10px;width:100%}
+    /* ---- results cards ---- */
+    .rlead{max-width:760px;margin:0 auto 30px;text-align:center;color:var(--muted);font-size:15.5px}
+    .rescard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s}
+    .rescard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+    .rhead{margin-bottom:8px}
+    .rtag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+    .rtag.pri{background:rgba(59,130,246,.12);color:var(--blue-600)}
+    .rtag.sec{background:rgba(14,159,159,.14);color:var(--teal)}
+    .rescard h3{font-size:19px;font-weight:700;margin-bottom:12px;line-height:1.25}
+    .rfig{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-bottom:12px;margin-bottom:12px;border-bottom:1px dashed var(--line)}
+    .rfig b{font-family:'Plus Jakarta Sans';font-weight:800;font-size:38px;color:var(--blue-600);line-height:1.16;padding-bottom:3px;display:inline-block}
+    .rfig span{font-size:12.4px;color:var(--muted);font-weight:600}
+    .rescard p{color:#33425a;font-size:14.3px;margin:0}
+    /* ---- interactive demo ---- */
+    .demo{max-width:940px;margin:52px auto 0;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-md);padding:28px}
+    .demo-head{text-align:center;margin-bottom:18px}
+    .demo-head h3{font-size:22px;margin:4px 0 6px}
+    .demo-head p{color:var(--muted);font-size:14.5px;max-width:660px;margin:0 auto}
+    .dtabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+    .dtab{border:1px solid var(--line);background:var(--bg);color:var(--muted);font-weight:600;font-size:13.5px;padding:8px 15px;border-radius:999px;cursor:pointer;transition:.2s}
+    .dtab:hover{color:var(--ink)}
+    .dtab.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(59,130,246,.28)}
+    .dpanel{display:none}
+    .dpanel.active{display:block;animation:fade .4s ease}
+    .btn-ghost2{background:var(--bg);border:1.5px solid var(--line);color:var(--muted);padding:10px 16px;font-size:14px}
+    .btn-ghost2:hover{color:var(--ink);border-color:var(--blue-500)}
+    .scrub{max-width:560px;margin:0 auto}
+    .frame{position:relative;width:100%;padding-top:56.25%;border-radius:14px;overflow:hidden;background-color:#0b2545;background-image:url(assets/demo/seq_sprite.jpg);background-size:1000% 800%;background-repeat:no-repeat;background-position:0 0;box-shadow:var(--shadow-md)}
+    .frame .ring{position:absolute;inset:6px;border:3px solid #34e29b;border-radius:12px;opacity:0;transition:opacity .2s;pointer-events:none}
+    .frame.hit .ring{opacity:1;animation:pulse 1.1s ease-in-out infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(52,226,155,.22),0 0 24px rgba(52,226,155,.5) inset}50%{box-shadow:0 0 0 6px rgba(52,226,155,.10),0 0 34px rgba(52,226,155,.85) inset}}
+    .fbadge{position:absolute;left:10px;bottom:10px;background:rgba(16,163,127,.96);color:#fff;font-size:12px;font-weight:700;padding:6px 11px;border-radius:8px;opacity:0;transform:translateY(6px);transition:.25s;pointer-events:none}
+    .frame.hit .fbadge{opacity:1;transform:none}
+    .fcounter{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:14px 2px 2px;font-size:13.5px}
+    .fcounter #fnum{font-weight:700;color:var(--ink)}
+    .fcounter .fhint{color:var(--green);font-weight:600;font-size:12.5px;opacity:0;transition:.2s;text-align:right}
+    .fcounter .fhint.on{opacity:1}
+    .track{position:relative;padding-top:16px}
+    .track input[type=range]{width:100%;accent-color:var(--accent-2);cursor:pointer}
+    .pred-mark{position:absolute;top:2px;width:2px;height:14px;background:var(--green);border-radius:2px}
+    .pred-mark::after{content:"model";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--green);white-space:nowrap}
+    .dctrl{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+    .guess{display:flex;gap:26px;align-items:center;justify-content:center;flex-wrap:wrap}
+    .crop{width:200px;height:236px;border-radius:14px;background:#0b2545 center/cover no-repeat;box-shadow:var(--shadow-md);flex:none}
+    .crop#cropMeta{background-image:url(assets/demo/sample_meta.jpg)}
+    .crop.tall{height:300px;width:150px}
+    .crop#cropCount{background-image:url(assets/demo/sample_count.jpg)}
+    .gbox{max-width:330px}
+    .gbox .q{font-weight:700;font-size:16px;color:var(--ink);margin:0 0 12px}
+    .gbtns{display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+    .gbtn{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:14px;padding:10px 16px;border-radius:10px;cursor:pointer;transition:.2s}
+    .gbtn:hover{border-color:var(--blue-500)}
+    .gbtn.sel{background:var(--blue-600);color:#fff;border-color:transparent}
+    .stepper{display:inline-flex;align-items:center;gap:14px;margin-bottom:14px}
+    .stepper button{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);font-size:20px;font-weight:700;color:var(--ink);cursor:pointer;line-height:1}
+    .stepper button:hover{border-color:var(--blue-500)}
+    .stepper #cVal{font-family:'Plus Jakarta Sans';font-weight:800;font-size:26px;min-width:34px;text-align:center;color:var(--blue-600)}
+    .greveal{margin-top:14px;font-size:14px;line-height:1.6;display:none}
+    .greveal.on{display:block;animation:fade .35s ease}
+    .greveal .gt{font-weight:700;color:var(--ink)}
+    .greveal .ok{color:var(--green);font-weight:700}
+    .greveal .no{color:#e0796b;font-weight:700}
+    .greveal .pend{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:3px 10px}
+    .dcap{max-width:640px;margin:22px auto 0;text-align:center;font-size:13.3px;color:var(--muted)}
+    @media(max-width:680px){.crop{width:180px;height:210px}.guess{gap:16px}}
+  </style>
+</head>
+<body>
+  <div id="progress"></div>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#hero">
+        <span class="logo" aria-hidden="true">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <path d="M6 9V7a1 1 0 0 1 1-1h2M15 6h2a1 1 0 0 1 1 1v2M18 15v2a1 1 0 0 1-1 1h-2M9 18H7a1 1 0 0 1-1-1v-2"/>
+            <circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="12" r="4.4" opacity=".55"/>
+          </svg>
+        </span>
+        <span>AI-SLN<small>Sentinel lymph node · endometrial cancer</small></span>
+      </a>
+      <nav class="nav-links" id="navLinks">
+        <a class="link" href="#problem">Problem</a>
+        <a class="link" href="#tasks">Tasks</a>
+        <a class="link" href="#open">Issue</a>
+        <a class="link" href="#method">Method</a>
+        <a class="link" href="#results">Results</a>
+        <a class="link" href="#data">Data</a>
+        <a class="link" href="#partners">Partners</a>
+      </nav>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="wrap"><div class="hero-inner">
+      <span class="badge"><span class="dot"></span> Clinical AI · Surgical Video Analysis</span>
+      <h1>AI-SLN</h1>
+      <p class="subtitle">AI-based analysis of ICG fluorescence for sentinel lymph<br>node assessment in endometrial cancer surgery</p>
+      <p class="lead">A pilot study exploring how computer-vision and vision–language models can read intra-operative indocyanine green (ICG) fluorescence laparoscopy to support the surgeon's sentinel lymph node decisions.</p>
+      <div class="hero-meta">
+        <a href="https://disi.unibo.it/en" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 21V8l6-4 6 4v13M10 12h4M10 16h4"/></svg> UniboNLP · University of Bologna, Italy</a>
+        <a href="https://www.aosp.bo.it" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 21V8l6-4 6 4v13M10 12h4M10 16h4"/></svg> IRCCS AOU di Bologna · Sant'Orsola, Italy</a>
+      </div>
+      <div class="hero-cta">
+        <a href="#problem" class="btn btn-primary">Explore the project →</a>
+        <a href="#results" class="btn btn-ghost">See results</a>
+        <span class="btn btn-soon" title="Not yet available">Paper · coming soon</span>
+      </div>
+    </div></div>
+    <a href="#problem" class="scroll-cue">Scroll<span class="mouse"></span></a>
+  </section>
+
+  <!-- ===== THE CLINICAL PROBLEM ===== -->
+  <section class="block" id="problem">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">The clinical problem</span>
+        <h2>One small node,<br>one big decision</h2>
+        <p>In endometrial cancer, the treatment depends on whether the tumour has spread to the pelvic lymph nodes. The catch: during surgery, both <b>finding</b> the right node and <b>reading</b> whether it carries cancer are surprisingly hard.</p>
+      </div>
+
+      <div class="prose reveal d1" style="margin-bottom:40px">
+        <p>To decide on therapy, surgeons need to know if cancer has spread to the pelvic lymph nodes. Removing them all (lymphadenectomy) is highly invasive, so the modern approach targets the <b>sentinel lymph node (SLN)</b>: the first node along the lymphatic drainage from the tumour. If the sentinel is clean, the rest of the chain is very likely clean too. The surgeon marks it with a fluorescent dye, <b>indocyanine green (ICG)</b>, that glows under a near-infrared camera, then removes the glowing tissue for pathology. The technique is the standard of care<sup><a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">[4]</a></sup>, but it still fails often — and that failure is what this project is about.</p>
+      </div>
+
+      <!-- interactive explainer -->
+      <div class="explain reveal d1">
+        <div>
+          <div class="tabs" id="tabs">
+            <button class="tab active" data-t="0">Endometrial cancer</button>
+            <button class="tab" data-t="1">Lymph nodes</button>
+            <button class="tab" data-t="2">Sentinel node</button>
+            <button class="tab" data-t="3">ICG fluorescence</button>
+            <button class="tab" data-t="4">Why it's unsolved</button>
+          </div>
+          <div class="panels">
+            <div class="panel active" data-p="0">
+              <h3>The most common gynaecological cancer in Europe</h3>
+              <p>Endometrial cancer arises in the <b>endometrium</b>, the inner lining of the uterus. It is the most frequent gynaecological malignancy in Europe, with roughly <b>417,000 new cases and 97,000 deaths</b> worldwide in 2020, and a rising incidence driven by ageing and obesity.<sup><a href="https://doi.org/10.3322/caac.21660" target="_blank" rel="noopener">[1]</a></sup> Its prognosis and treatment hinge on one question: has it reached the lymph nodes?<sup><a href="https://doi.org/10.6004/jnccn.2023.0006" target="_blank" rel="noopener">[2]</a></sup></p>
+            </div>
+            <div class="panel" data-p="1">
+              <h3>Lymph nodes are healthy filters, not cancer</h3>
+              <p>A lymph node is a small, bean-shaped organ of the <b>lymphatic system</b>, a vessel network that collects fluid (lymph) from tissues and returns it to the blood. Nodes are filtering stations that host immune cells; everyone has hundreds, grouped in stations (neck, armpits, groin, <b>pelvis</b>…). Lymph drains in <b>predictable directions</b> — so if a tumour sheds cells, they travel along that same drainage path.</p>
+            </div>
+            <div class="panel" data-p="2">
+              <h3>The sentinel node: the first stop</h3>
+              <p>The <b>sentinel lymph node</b> is the first node (or few) along the drainage path from the tumour — the first place stray cancer cells would arrive. The clinical logic: if the sentinel is clean, the downstream nodes very likely are too, so it can be removed <b>selectively</b> instead of taking the whole chain. This spares patients the morbidity of a full lymphadenectomy.</p>
+            </div>
+            <div class="panel" data-p="3">
+              <h3>Making the node glow</h3>
+              <p>The surgeon injects <b>indocyanine green (ICG)</b>, a dye that lights up green under a near-infrared camera. It travels through the lymphatic vessels and accumulates in the sentinel node(s). Watching the <b>laparoscopic video</b>, the surgeon spots the glowing area, removes that piece of tissue — the <b>“packet”</b> — and sends it to pathology.</p>
+            </div>
+            <div class="panel" data-p="4">
+              <h3>Detection is far from perfect</h3>
+              <p>Each patient has two sides. Overall the node is found in ~95.6% of patients, but on <b>both</b> sides in only ~76.5%<sup><a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">[4]</a></sup>; the technique fails on one side in about <b>23.5%</b> of cases<sup><a href="https://doi.org/10.1016/S1470-2045(18)30448-0" target="_blank" rel="noopener">[5]</a></sup>. A common cause is the <b>“empty node packet”</b>: fluorescent tissue that, at histology, contains no lymph node at all<sup><a href="https://pubmed.ncbi.nlm.nih.gov/30833439/" target="_blank" rel="noopener">[6]</a></sup>. There is also no consensus on timing. If both sides fail, the whole minimally-invasive procedure was in vain. This is exactly where AI could help.</p>
+              <div class="kpi"><b>23.5%</b><span>unilateral failure rate</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="figwrap">
+          <img class="protect" src="assets/ai_sln_overview.jpg" draggable="false" alt="Illustration of minimally-invasive surgery: the operating team and the near-infrared laparoscopic view, with the fluorescent sentinel lymph node highlighted on the monitor.">
+        </div>
+      </div>
+
+      <!-- two clinical questions -> two tasks -->
+      <div class="twoq reveal d2">
+        <div class="qcard c1">
+          <div class="qh"><span class="pill">The container</span></div>
+          <p><em>Is there a lymph node in the removed tissue at all?</em> The packet may be fluorescent yet contain no node — an “empty packet”. This is the presence of the container.</p>
+        </div>
+        <div class="qcard c2">
+          <div class="qh"><span class="pill">The content</span></div>
+          <p><em>Does that node contain tumour cells?</em> A node is a healthy organ; a <b>metastasis</b> is cancer that travelled through the lymph and colonised it. This is the content inside the container.</p>
+        </div>
+      </div>
+
+      <div class="refs reveal">
+        <b>Sources.</b>
+        [1] GLOBOCAN — Sung et al., <i>CA Cancer J Clin</i> 2021, <a href="https://doi.org/10.3322/caac.21660" target="_blank" rel="noopener">doi:10.3322/caac.21660</a>.
+        [2] NCCN Uterine Neoplasms — Abu-Rustum et al. 2023, <a href="https://doi.org/10.6004/jnccn.2023.0006" target="_blank" rel="noopener">doi:10.6004/jnccn.2023.0006</a>.
+        [3] SGO consensus — Holloway et al., <i>Gynecol Oncol</i> 2017, <a href="https://doi.org/10.1016/j.ygyno.2017.05.027" target="_blank" rel="noopener">doi:10.1016/j.ygyno.2017.05.027</a>.
+        [4] SLN-ICG meta-analysis — Burg et al., <i>J Gynecol Oncol</i> 2022, <a href="https://doi.org/10.3802/jgo.2022.33.e66" target="_blank" rel="noopener">doi:10.3802/jgo.2022.33.e66</a>.
+        [5] FILM trial — Frumovitz et al., <i>Lancet Oncol</i> 2018, <a href="https://doi.org/10.1016/S1470-2045(18)30448-0" target="_blank" rel="noopener">doi:10.1016/S1470-2045(18)30448-0</a>.
+        [6] Empty node packets — Thomaier et al., <i>Int J Gynecol Cancer</i> 2019, <a href="https://pubmed.ncbi.nlm.nih.gov/30833439/" target="_blank" rel="noopener">PMID:30833439</a>.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TASKS ===== -->
+  <section class="block alt" id="tasks">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Tasks</span>
+        <h2>Three questions the AI helps answer</h2>
+        <p>AI-SLN develops experimental models that read intra-operative ICG laparoscopy to <b>support the surgeon's decisions, not to replace them</b>. We frame three clinical questions and, for each, explore and compare several modelling approaches.</p>
+      </div>
+      <div class="grid g-3">
+        <div class="card reveal">
+          <span class="tag pri">Detection</span>
+          <div class="ic-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><circle cx="12" cy="12" r="2.4"/></svg></div>
+          <h3>Detecting the SLN</h3>
+          <p>Recognise whether the fluorescent tissue in view actually contains a sentinel lymph node, or is an empty packet.</p>
+        </div>
+        <div class="card reveal d1">
+          <span class="tag sec">Metastasis</span>
+          <div class="ic-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
+          <h3>Predicting metastasis</h3>
+          <p>Anticipate the biopsy outcome — a node that is involved by cancer or free of disease — from the intra-operative image, without waiting for histology.</p>
+        </div>
+        <div class="card reveal d2">
+          <span class="tag sec">Node count</span>
+          <div class="ic-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 19v-6M12 19v-9M16 19v-4"/></svg></div>
+          <h3>Estimating node count</h3>
+          <p>Estimate how many lymph nodes are contained in the fluorescent tissue before it is removed.</p>
+        </div>
+      </div>
+      <p class="note reveal">In every case the goal is decision support at the surgeon's side — a second read, never an autonomous decision.</p>
+    </div>
+  </section>
+
+  <!-- ===== WHY IT'S AN OPEN ISSUE ===== -->
+  <section class="block" id="open">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Open challenge</span>
+        <h2>Why this is an open problem</h2>
+      </div>
+      <div class="grid g-2" style="max-width:960px;margin:0 auto">
+        <div class="card reveal">
+          <div class="ic-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h3>An unprecedented setting</h3>
+          <p>Surgical AI has advanced through foundation models and public benchmarks (for example, MICCAI EndoVis challenges) — but almost always on <b>white-light</b> video and on tasks like phase or instrument recognition. To date there are <b>no foundation models pre-trained on this image modality</b> — gynaecological laparoscopy with combined white-light and near-infrared (ICG) channels — nor on the <b>lymph-node-centric</b> tasks we consider. Our specific setting has no ready-made precedent.</p>
+        </div>
+        <div class="card reveal d1">
+          <div class="ic-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6 6l-1.4-1.4M19.4 19.4 18 18M6 18l-1.4 1.4M19.4 4.6 18 6"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h3>Genuinely exploratory questions</h3>
+          <p>Some of our tasks are <b>fully experimental</b>: we test whether AI can pick up patterns that are <b>not visible to the surgeon's eye</b> — for instance signals hinting at metastatic involvement, or faint dye uptake below the threshold of human perception — and turn them into useful predictions. These are open scientific questions, not solved engineering.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== METHOD ===== -->
+  <section class="block alt" id="method">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Method</span>
+        <h2>Our research approach</h2>
+        <p>We systematically explore what today's models can do in this data-scarce, privacy-bound setting, and how to push them further.</p>
+      </div>
+      <div class="prose reveal d1">
+        <p>We experiment with the capabilities of <b>open-source, state-of-the-art</b> models — from visual encoders to <b>multimodal large language models</b>, both domain-specialised and general purpose — and combine them with training and <b>data-augmentation</b> techniques designed to extract signal from very few examples. Everything runs on <b>local infrastructure</b>, so patient data never leaves a controlled environment. Keeping the approach broad lets us compare paradigms fairly, and preserves the freedom to try new directions ahead of the full paper.</p>
+      </div>
+      <div class="chips reveal d2">
+        <span class="chip"><b>LemonFM</b> · surgical foundation encoder</span>
+        <span class="chip"><b>MedGemma-4B</b> · multimodal LLM</span>
+        <span class="chip"><b>MedSigLIP</b> · medical vision–language</span>
+        <span class="chip"><b>SAM-like</b> models · segmentation &amp; tracking over time</span>
+        <span class="chip">specialised surgical encoders</span>
+        <span class="chip">text &amp; visual prompting</span>
+        <span class="chip">fine-tuning &amp; augmentation for data scarcity</span>
+      </div>
+      <p class="note reveal">Model details are kept deliberately general here and will be fully described in the forthcoming paper.</p>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS ===== -->
+  <section class="block" id="results">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Pilot results</span>
+        <h2>Promising signal under hard constraints</h2>
+      </div>
+      <p class="rlead reveal">The best results obtained so far, on held-out examples, in a data-scarce pilot setting.</p>
+
+      <div class="grid g-3 reveal d1">
+        <div class="rescard">
+          <div class="rhead"><span class="rtag pri">Detection</span></div>
+          <h3>Sentinel node, spotted in time</h3>
+          <div class="rfig"><b>66.7%</b><span>frames exact &middot; up from 6.1% untrained &middot; ~3&nbsp;s mean error</span></div>
+          <p>The model pinpoints when the sentinel node first becomes visible in the clip in about two of three cases &mdash; a large jump over the untrained model &mdash; and is usually only seconds off.</p>
+        </div>
+        <div class="rescard">
+          <div class="rhead"><span class="rtag sec">Metastasis</span></div>
+          <h3>Metastasis, flagged with precision</h3>
+          <div class="rfig"><b>1.00</b><span>precision &middot; 0.72 PR-AUC &middot; 0.80 F1</span></div>
+          <p>When the model flags a node as involved by cancer, it is right, and it already catches a clear majority of the true cases &mdash; a question a surgeon cannot answer by eye.</p>
+        </div>
+        <div class="rescard">
+          <div class="rhead"><span class="rtag sec">Node count</span></div>
+          <h3>Node count, within one</h3>
+          <div class="rfig"><b>&plusmn;1</b><span>in 71% of cases &middot; mean error 1.39 nodes</span></div>
+          <p>Asked how many nodes the fluorescent tissue holds, the model usually lands within one of the pathology count.</p>
+        </div>
+      </div>
+
+      <!-- interactive demos -->
+      <div class="demo reveal d1">
+        <div class="demo-head">
+          <span class="eyebrow">See it in action</span>
+          <h3>Play with a real example</h3>
+          <p>De-identified examples from our evaluation. Detection already works end-to-end; for the other two you can test your own eye against the ground truth while the models are still being refined.</p>
+        </div>
+        <div class="dtabs" id="dtabs">
+          <button class="dtab active" data-d="0">Detecting the SLN</button>
+          <button class="dtab" data-d="1">Predicting metastasis</button>
+          <button class="dtab" data-d="2">Node count</button>
+        </div>
+
+        <div class="dpanel active" data-dp="0">
+          <div class="scrub">
+            <div class="frame protect" id="frameView"><div class="ring" id="predRing"></div><div class="fbadge" id="fbadge">&#10003; model prediction = ground truth</div></div>
+            <div class="fcounter"><span id="fnum">Frame 1 / 80</span><span class="fhint" id="fhint"></span></div>
+            <div class="track"><div class="pred-mark" id="predMark" title="Model-predicted frame"></div><input type="range" id="slider" min="1" max="80" value="1" aria-label="Frame"></div>
+            <div class="dctrl"><button class="btn btn-primary" id="playBtn">&#9654; Play</button><button class="btn btn-ghost2" id="prevBtn">&lsaquo; Prev</button><button class="btn btn-ghost2" id="nextBtn">Next &rsaquo;</button></div>
+          </div>
+          <p class="dcap">A held-out clip of 80 frames. The task: find the moment the sentinel node first becomes visible. Scrub through &mdash; the model&rsquo;s predicted frame lights up green, and here it matches the surgeon&rsquo;s ground truth exactly.</p>
+        </div>
+
+        <div class="dpanel" data-dp="1">
+          <div class="guess">
+            <div class="crop protect" id="cropMeta"></div>
+            <div class="gbox">
+              <p class="q">Does this node carry cancer?</p>
+              <div class="gbtns"><button class="gbtn" data-g="Metastatic">Metastatic</button><button class="gbtn" data-g="Disease-free">Disease-free</button></div>
+              <div class="greveal" id="revMeta"></div>
+            </div>
+          </div>
+          <p class="dcap">Metastasis is not visible to the naked eye &mdash; which is exactly why we test whether AI can help. The ground truth comes from pathology; the model&rsquo;s prediction for this task is still being refined.</p>
+        </div>
+
+        <div class="dpanel" data-dp="2">
+          <div class="guess">
+            <div class="crop tall protect" id="cropCount"></div>
+            <div class="gbox">
+              <p class="q">How many lymph nodes are in this tissue?</p>
+              <div class="stepper"><button id="cMinus" aria-label="decrease">&minus;</button><span id="cVal">3</span><button id="cPlus" aria-label="increase">+</button></div>
+              <button class="btn btn-primary" id="cReveal">Reveal ground truth</button>
+              <div class="greveal" id="revCount"></div>
+            </div>
+          </div>
+          <p class="dcap">Counting the nodes packed inside the fluorescent tissue, before removal, is hard even for surgeons. The ground truth comes from pathology; this model is still being trained.</p>
+        </div>
+      </div>
+
+      <p class="note reveal d2">These results form a solid, reproducible experimental base and motivate large-scale data collection and the training of dedicated foundation models.</p>
+    </div>
+  </section>
+
+  <!-- ===== DATA ===== -->
+  <section class="block alt" id="data">
+    <div class="wrap">
+      <div class="callout reveal">
+        <h3>Data &amp; ethics</h3>
+        <p>AI-SLN is a retrospective, observational, no-profit study of patients treated for endometrial cancer with hysterectomy and sentinel lymph node biopsy using ICG, across the participating hospital centres. The study was <b>approved by the Ethics Committee</b> and conducted under Good Clinical Practice. Because the material is intra-operative surgical video and clinical outcomes, the dataset <b>cannot be publicly released for privacy reasons</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PARTNERS ===== -->
+  <section class="block" id="partners">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Partners</span>
+        <h2>A clinical–AI collaboration</h2>
+      </div>
+      <div class="partners">
+        <a class="partner reveal" href="https://disi.unibo.it/en" target="_blank" rel="noopener">
+          <span class="plogo"><img src="assets/unibonlp.svg" alt="UniboNLP logo"></span>
+          <span>
+            <h3>UniboNLP</h3>
+            <span class="prole">Artificial Intelligence</span>
+            <p>Natural Language Processing group, DISI, University of Bologna (Italy). Designs, trains and evaluates the AI models, and leads the methodological research.</p>
+            <span class="plink">disi.unibo.it →</span>
+          </span>
+        </a>
+        <a class="partner reveal d1" href="https://www.aosp.bo.it" target="_blank" rel="noopener">
+          <span class="plogo"><img src="assets/irccs.webp" alt="IRCCS AOU di Bologna — Policlinico di Sant'Orsola logo"></span>
+          <span>
+            <h3>IRCCS AOU di Bologna</h3>
+            <span class="prole">Clinical partner</span>
+            <p>Policlinico di Sant'Orsola, Gynaecology &amp; Human Reproduction Physiopathology (Italy). Leads patient care, data collection, anonymisation and expert clinical annotation (ground truth).</p>
+            <span class="plink">aosp.bo.it →</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESOURCES ===== -->
+  <section class="block alt" id="resources">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Materials</span>
+        <h2>Resources</h2>
+      </div>
+      <div class="res-wrap reveal d1">
+        <div class="res">
+          <div class="ic-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V6a2 2 0 012-2h13v16H6a2 2 0 00-2 1.5z"/><path d="M19 4v16"/></svg></div>
+          <div><div class="rt">Paper</div><div class="rs">In preparation</div></div>
+          <span class="soon">Coming soon</span>
+        </div>
+      </div>
+
+      <div class="cta-band reveal d2">
+        <h2>Interested in the project?</h2>
+        <p>Have a question about the study, the clinical problem, or the methods behind it? We are glad to hear from you — reach the team directly by email.</p>
+        <a href="mailto:ai.sln@gmail.com" class="btn btn-primary mail">ai.sln@gmail.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FUNDING ===== -->
+  <section class="block" id="funding">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Funding</span>
+        <h2>Acknowledgements</h2>
+      </div>
+      <div class="fund reveal d1">
+        <a class="flogo" href="https://www.fondazionecarisbo.it" target="_blank" rel="noopener"><img src="assets/carisbo.png" alt="Fondazione Cassa di Risparmio in Bologna (CARISBO)"></a>
+        <div class="ftxt">
+          <h3>Fondazione Cassa di Risparmio in Bologna</h3>
+          <p>This project is supported by <a href="https://www.fondazionecarisbo.it" target="_blank" rel="noopener">Fondazione CARISBO</a> through the competitive call <i>“Bando Ricerca scientifica e Alta tecnologia 2024”</i> — an annual grant programme that funds scientific research and high-technology projects proposed by universities and research bodies in the Bologna area.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="cols">
+        <div class="fbrand">
+          <div class="brand"><span class="logo" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 9V7a1 1 0 0 1 1-1h2M15 6h2a1 1 0 0 1 1 1v2M18 15v2a1 1 0 0 1-1 1h-2M9 18H7a1 1 0 0 1-1-1v-2"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="4.4" opacity=".55"/></svg></span><span>AI-SLN</span></div>
+          <p style="color:rgba(255,255,255,.66);font-size:13.5px">AI-based analysis of ICG fluorescence during the sentinel lymph node technique in endometrial cancer surgery.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#problem">The problem</a></li>
+            <li><a href="#tasks">Tasks</a></li>
+            <li><a href="#open">Issue</a></li>
+            <li><a href="#method">Method</a></li>
+            <li><a href="#results">Results</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="#data">Data &amp; ethics</a></li>
+            <li><a href="#partners">Partners</a></li>
+            <li><a href="mailto:ai.sln@gmail.com">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Partners</h4>
+          <ul>
+            <li><a href="https://disi.unibo.it/en" target="_blank" rel="noopener">UniboNLP · University of Bologna</a></li>
+            <li><a href="https://www.aosp.bo.it" target="_blank" rel="noopener">IRCCS AOU di Bologna</a></li>
+            <li><a href="https://www.fondazionecarisbo.it" target="_blank" rel="noopener">Fondazione CARISBO</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="bottom">
+        <span>© 2025 AI-SLN · UniboNLP (University of Bologna) &amp; IRCCS AOU di Bologna.</span>
+        <span>Supported by Fondazione CARISBO.</span>
+      </div>
+    </div>
+  </footer>
+
+  <button id="toTop" aria-label="Back to top">↑</button>
+
+  <script>
+    var nav=document.getElementById('nav'),bar=document.getElementById('progress'),toTop=document.getElementById('toTop');
+    function onScroll(){
+      var y=window.scrollY||document.documentElement.scrollTop;
+      nav.classList.toggle('scrolled',y>40);
+      var h=document.documentElement.scrollHeight-window.innerHeight;
+      bar.style.width=(h>0?(y/h*100):0)+'%';
+      toTop.classList.toggle('show',y>600);
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+    toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+    var mt=document.getElementById('menuToggle'),nl=document.getElementById('navLinks');
+    mt.addEventListener('click',function(){nl.classList.toggle('open')});
+    nl.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){nl.classList.remove('open')})});
+    // tabs
+    var tabs=document.querySelectorAll('#tabs .tab'),panels=document.querySelectorAll('.panel');
+    tabs.forEach(function(t){t.addEventListener('click',function(){
+      tabs.forEach(function(x){x.classList.remove('active')});
+      panels.forEach(function(x){x.classList.remove('active')});
+      t.classList.add('active');
+      document.querySelector('.panel[data-p="'+t.dataset.t+'"]').classList.add('active');
+    })});
+    // reveal
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+
+    // ===== interactive result demos =====
+    (function(){
+      var COLS=10,ROWS=8,TOTAL=80,PRED=11;
+      var fv=document.getElementById('frameView');
+      // demo tabs
+      var dtabs=document.querySelectorAll('.dtab'),dpanels=document.querySelectorAll('.dpanel');
+      dtabs.forEach(function(t){t.addEventListener('click',function(){
+        dtabs.forEach(function(x){x.classList.remove('active')});
+        dpanels.forEach(function(x){x.classList.remove('active')});
+        t.classList.add('active');
+        var pn=document.querySelector('.dpanel[data-dp="'+t.dataset.d+'"]'); if(pn)pn.classList.add('active');
+      })});
+      // scrubber (task 1)
+      if(fv){
+        var slider=document.getElementById('slider'),fnum=document.getElementById('fnum'),
+            fhint=document.getElementById('fhint'),predMark=document.getElementById('predMark'),
+            playBtn=document.getElementById('playBtn'),prevBtn=document.getElementById('prevBtn'),
+            nextBtn=document.getElementById('nextBtn');
+        predMark.style.left=((PRED-1)/(TOTAL-1)*100)+'%';
+        function show(n){
+          n=Math.max(1,Math.min(TOTAL,n));slider.value=n;
+          var i=n-1,c=i%COLS,r=Math.floor(i/COLS);
+          fv.style.backgroundPosition=(c/(COLS-1)*100)+'% '+(r/(ROWS-1)*100)+'%';
+          fnum.textContent='Frame '+n+' / '+TOTAL;
+          var hit=(n===PRED);
+          fv.classList.toggle('hit',hit);
+          fhint.textContent=hit?'sentinel node first visible here':'';
+          fhint.classList.toggle('on',hit);
+        }
+        var playing=false,timer=null;
+        function stopPlay(){playing=false;if(timer){clearInterval(timer);timer=null;}playBtn.textContent='\u25B6 Play';}
+        function stepPlay(){
+          var n=+slider.value;
+          if(n>=TOTAL){stopPlay();return;}
+          var nn=n+1;show(nn);
+          if(nn===PRED){clearInterval(timer);timer=null;
+            setTimeout(function(){if(playing){timer=setInterval(stepPlay,110);}},900);}
+        }
+        function startPlay(){playing=true;playBtn.textContent='\u23F8 Pause';if(+slider.value>=TOTAL)show(1);timer=setInterval(stepPlay,110);}
+        playBtn.addEventListener('click',function(){playing?stopPlay():startPlay();});
+        prevBtn.addEventListener('click',function(){stopPlay();show(+slider.value-1);});
+        nextBtn.addEventListener('click',function(){stopPlay();show(+slider.value+1);});
+        slider.addEventListener('input',function(){stopPlay();show(+slider.value);});
+        show(1);
+      }
+      // metastasis guess (task 2.1) -- pred not available yet
+      var META_GOLD='Metastatic',revMeta=document.getElementById('revMeta');
+      document.querySelectorAll('.dpanel[data-dp="1"] .gbtn').forEach(function(b){
+        b.addEventListener('click',function(){
+          document.querySelectorAll('.dpanel[data-dp="1"] .gbtn').forEach(function(x){x.classList.remove('sel')});
+          b.classList.add('sel');
+          var g=b.dataset.g,ok=(g===META_GOLD);
+          revMeta.innerHTML='Your call: <b>'+g+'</b> &middot; Ground truth: <span class="gt">'+META_GOLD+'</span> '
+            +(ok?'<span class="ok">\u2713 matches</span>':'<span class="no">\u2717 not quite</span>')
+            +'<br><span class="pend">Model prediction \u00b7 coming soon</span>';
+          revMeta.classList.add('on');
+        });
+      });
+      // node count guess (task 2.3) -- pred not available yet
+      var COUNT_GOLD=5,cVal=document.getElementById('cVal'),revCount=document.getElementById('revCount'),cc=3;
+      var cMinus=document.getElementById('cMinus'),cPlus=document.getElementById('cPlus'),cReveal=document.getElementById('cReveal');
+      if(cReveal){
+        cMinus.addEventListener('click',function(){cc=Math.max(0,cc-1);cVal.textContent=cc;});
+        cPlus.addEventListener('click',function(){cc=Math.min(20,cc+1);cVal.textContent=cc;});
+        cReveal.addEventListener('click',function(){
+          var ok=(cc===COUNT_GOLD);
+          revCount.innerHTML='Your guess: <b>'+cc+'</b> &middot; Ground truth: <span class="gt">'+COUNT_GOLD+' nodes</span> '
+            +(ok?'<span class="ok">\u2713 exact</span>':'<span class="no">off by '+Math.abs(cc-COUNT_GOLD)+'</span>')
+            +'<br><span class="pend">Model prediction \u00b7 in training</span>';
+          revCount.classList.add('on');
+        });
+      }
+      // discourage casual download of imagery
+      document.addEventListener('contextmenu',function(e){var t=e.target;if(t&&(t.tagName==='IMG'||(t.classList&&t.classList.contains('protect'))||(t.closest&&t.closest('.protect'))))e.preventDefault();});
+      document.addEventListener('dragstart',function(e){var t=e.target;if(t&&(t.tagName==='IMG'||(t.closest&&t.closest('.protect'))))e.preventDefault();});
+    })();
+  </script>
+</body>
+</html>

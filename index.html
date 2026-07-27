@@ -300,6 +300,8 @@
     .greveal .no{color:#e0796b;font-weight:700}
     .greveal .pend{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:3px 10px}
     .dcap{max-width:640px;margin:22px auto 0;text-align:center;font-size:13.3px;color:var(--muted)}
+    .ddisclose{display:flex;align-items:center;justify-content:center;gap:8px;max-width:720px;margin:24px auto 0;padding:11px 16px;border-top:1px solid var(--line);text-align:center;font-size:12.8px;line-height:1.5;color:var(--muted)}
+    .ddisclose .dic{width:22px;height:22px;flex:none;color:var(--blue-500);align-self:flex-start;margin-top:1px}
     @media(max-width:680px){.crop{width:180px;height:210px}.guess{gap:16px}}
 
     .partner h3 a{color:var(--ink)}
@@ -605,6 +607,11 @@
           </div>
           <p class="dcap">Counting the nodes packed inside the fluorescent tissue, before removal, is hard even for surgeons. Here the ground truth comes from pathology, and the model&rsquo;s prediction matches it.</p>
         </div>
+
+        <p class="ddisclose">
+          <svg class="dic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z"/><path d="M9.2 12l2 2 3.6-4"/></svg>
+          Every image and clip is anonymised at IRCCS AOU di Bologna &middot; Policlinico di Sant&rsquo;Orsola. It is shown here with the hospital&rsquo;s authorisation.
+        </p>
       </div>
 
       <p class="note reveal d2">These results form a solid, reproducible experimental base and motivate large-scale data collection and the training of dedicated foundation models.</p>

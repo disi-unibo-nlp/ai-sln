@@ -63,6 +63,14 @@
     @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(30px)}}
     .hero-inner{position:relative;padding:130px 0 100px;max-width:940px}
     .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:.4px;margin-bottom:22px}
+    .funding{display:inline-flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.28);padding:10px 20px 10px 12px;border-radius:999px;box-shadow:0 10px 30px rgba(6,20,45,.28),inset 0 1px 0 rgba(255,255,255,.22);backdrop-filter:saturate(160%) blur(10px);-webkit-backdrop-filter:saturate(160%) blur(10px);margin-bottom:20px;transition:transform .2s,box-shadow .2s,border-color .2s}
+    .funding:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.5);box-shadow:0 14px 36px rgba(6,20,45,.36),inset 0 1px 0 rgba(255,255,255,.3)}
+    .funding .flogos{display:flex;align-items:center;gap:8px}
+    .funding .flogos img{height:30px;width:auto;display:block;background:#fff;border-radius:8px;padding:5px 8px;box-shadow:0 2px 6px rgba(6,20,45,.18)}
+    .funding .fdiv{width:1px;height:26px;background:rgba(255,255,255,.32)}
+    .funding .ftext{font-family:'Plus Jakarta Sans';font-weight:700;font-size:14px;color:#fff;white-space:nowrap;letter-spacing:.2px}
+    .funding .ftext .flabel{display:block;font-family:'Inter';font-weight:600;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:1px}
+    .hero-inner .funding{display:flex;width:fit-content}
     .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(6,182,212,.25)}
     .hero h1{font-size:clamp(42px,7vw,76px);font-weight:800;letter-spacing:-.02em}
     .hero .subtitle{font-size:clamp(18px,2.6vw,25px);font-weight:600;margin:16px 0 4px;color:#eaf4ff;font-family:'Plus Jakarta Sans'}
@@ -217,6 +225,9 @@
       .hero-inner{padding:120px 0 90px}
       .block{padding:66px 0}
       .partner{flex-direction:column;align-items:center;text-align:center}
+      .funding{flex-wrap:wrap;justify-content:center;gap:10px 12px;padding:10px 16px;border-radius:20px}
+      .funding .fdiv{display:none}
+      .funding .ftext{white-space:normal;font-size:13px}
     }
 
     /* ---- image protection (no easy download / drag) ---- */
@@ -328,6 +339,8 @@
         <a class="link" href="#results">Results</a>
         <a class="link" href="#data">Data</a>
         <a class="link" href="#partners">Partners</a>
+        <a class="link" href="#resources">Resources</a>
+        <a class="link" href="#funding">Funding</a>
       </nav>
       <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
@@ -337,6 +350,14 @@
     <div class="hero-grid"></div>
     <div class="hero-glow"></div>
     <div class="wrap"><div class="hero-inner">
+      <a class="funding" href="https://www.fondazionecarisbo.it" target="_blank" rel="noopener" title="Fondazione CARISBO">
+        <span class="flogos">
+          <img src="assets/unibo.png" alt="University of Bologna">
+          <img src="assets/carisbo.png" alt="Fondazione CARISBO">
+        </span>
+        <span class="fdiv"></span>
+        <span class="ftext"><span class="flabel">Project co-funded by</span>Fondazione CARISBO</span>
+      </a>
       <span class="badge"><span class="dot"></span> Clinical AI · Surgical Video Analysis</span>
       <h1>AI-SLN</h1>
       <p class="subtitle">AI-based analysis of ICG fluorescence for sentinel lymph<br>node assessment in endometrial cancer surgery</p>
